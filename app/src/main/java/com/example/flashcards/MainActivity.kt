@@ -4,24 +4,25 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import java.text.SimpleDateFormat
-import java.util.*
 import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity() {
 
     private var packageRecyclerView: RecyclerView? = null
-    private var packageArrayList: ArrayList<Package> = ArrayList()
+    companion object {  var packageArrayList: ArrayList<Package> = ArrayList()}
+
     private var addPackageButton: FloatingActionButton? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+       // packageArrayList.add(Package("PAKIET!", arrayListOf(FlashCard("SLOWO!","TLUMACZENIE"), FlashCard("SLOWO2","TLUAMCZENIE"))))
 
         println("$packageArrayList.toString()")
 
@@ -29,8 +30,21 @@ class MainActivity : AppCompatActivity() {
         packageRecyclerView = findViewById(R.id.recyclerView)
 
         packageRecyclerView?.layoutManager = LinearLayoutManager(this)
+        var context = this
+        var packageAdapter = PackageRecyclerAdapter(packageArrayList, object: PackageRecyclerAdapter.EditButtonListener{
+            override fun onEditButtonClick(position: Int) {
+                val intent = Intent(context,FlashCardsListActivity::class.java)
+                Log.i("MMM",position.toString())
+                //var extra = Bundle()
+               // extra.putSerializable("flash_card_list",packageArrayList[position].flashCards)
+                intent.putExtra("position",position)
+                Log.i("MMM", packageArrayList[position].flashCards.toString())
+                //intent.putExtra("",extra)
+                startActivity(intent)
+            }
+        })
 
-        packageRecyclerView?.adapter =  PackageRecyclerAdapter(packageArrayList)
+        packageRecyclerView?.adapter =  packageAdapter
 
 
     }
@@ -48,7 +62,7 @@ class MainActivity : AppCompatActivity() {
             val data: Intent? = result.data
             val nameString = data?.getStringExtra("package_name").toString()
             println(nameString)
-            nameString.let { Package(it, arrayListOf(Word("T","T"))) }
+            nameString.let { Package(it) }
                 .let { packageArrayList.add(it) }
 
             packageRecyclerView?.adapter?.notifyItemInserted(packageArrayList.size)
@@ -56,6 +70,8 @@ class MainActivity : AppCompatActivity() {
 
 
     }
+
+
 }
 
 //TODO: Edycja pakietu - wyświetlanie listy słówek (recyclerview pewnie) -> (dodawanie i usuwanie słówek)
