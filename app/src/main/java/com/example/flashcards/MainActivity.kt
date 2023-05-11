@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity() {
 
 }
 
-//TODO: Edycja pakietu - wyświetlanie listy słówek (recyclerview pewnie) -> (dodawanie i usuwanie słówek)
+//TODO podpiąć checkboxa learned
 //TODO: Nauka - wyświetlanie słówek z pakietu, możliwość zaznaczenia słówka jako nauczonego
 //TODO: Zapisywanie pakietów w bazie danych - odczytywanie ich z niej
 //TODO: eksport i import pakietów do/z pliku txt żeby można było wysyłać gotowe pakiety fiszek innym

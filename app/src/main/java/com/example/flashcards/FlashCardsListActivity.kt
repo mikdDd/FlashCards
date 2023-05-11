@@ -20,6 +20,7 @@ class FlashCardsListActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_flash_cards_list)
+        var context = this.applicationContext
 
         /*
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -38,7 +39,37 @@ class FlashCardsListActivity : AppCompatActivity() {
                 it.removeAt(position)
                 flashCardsListRecyclerView?.adapter?.notifyItemRemoved(position)
             }
+        },object:FlashCardsListRecyclerAdapter.EditButtonListener{
+            var pos : Int? = null
+            override fun onEditButtonClick(position: Int) {
+                intent = Intent(context,EditFlashCardActivity::class.java)
+
+                intent.putExtra("word",flashCards?.get(position)?.word)
+                intent.putExtra("translation",flashCards?.get(position)?.translation)
+                pos = position
+
+
+                editResultLauncher.launch(intent)
+            }
+            var editResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == Activity.RESULT_OK) {
+
+                    val data: Intent? = result.data
+                    val wordString = data?.getStringExtra("word").toString()
+                    val translationString = data?.getStringExtra("translation").toString()
+                    flashCards?.get(pos!!)?.word = wordString
+                    flashCards?.get(pos!!)?.translation = translationString
+
+                    flashCards?.let { flashCardsListRecyclerView?.adapter?.notifyItemChanged(pos!!)}
+                }
+
+
+            }
         })}
+
+
+
+
 
         flashCardsListRecyclerView?.adapter = adapter
     }
