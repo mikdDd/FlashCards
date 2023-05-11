@@ -15,7 +15,7 @@ import kotlin.collections.ArrayList
 class MainActivity : AppCompatActivity() {
 
     private var packageRecyclerView: RecyclerView? = null
-    companion object {  var packageArrayList: ArrayList<Package> = ArrayList()}
+    companion object {  var packageArrayList: ArrayList<Package> = ArrayList() }
 
     private var addPackageButton: FloatingActionButton? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,7 +31,8 @@ class MainActivity : AppCompatActivity() {
 
         packageRecyclerView?.layoutManager = LinearLayoutManager(this)
         var context = this
-        var packageAdapter = PackageRecyclerAdapter(packageArrayList, object: PackageRecyclerAdapter.EditButtonListener{
+        var packageAdapter = PackageRecyclerAdapter(packageArrayList,
+            object: PackageRecyclerAdapter.EditButtonListener{
             override fun onEditButtonClick(position: Int) {
                 val intent = Intent(context,FlashCardsListActivity::class.java)
                 Log.i("MMM",position.toString())
@@ -42,20 +43,23 @@ class MainActivity : AppCompatActivity() {
                 //intent.putExtra("",extra)
                 startActivity(intent)
             }
-        })
-
+        },
+            object: PackageRecyclerAdapter.StudyButtonListener{
+                override fun onStudyButtonClick(position: Int) {
+                    val intent = Intent(context, StudyingActivity::class.java)
+                    intent.putExtra("position",position)
+                    startActivity(intent)
+                }
+            }
+        )
         packageRecyclerView?.adapter =  packageAdapter
-
-
     }
 
     fun addPackageButtonClicked(view: View) {
-
-
         val intent = Intent(this, AddPackageActivity::class.java)
         resultLauncher.launch(intent)
-
     }
+
     var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
 
@@ -67,14 +71,9 @@ class MainActivity : AppCompatActivity() {
 
             packageRecyclerView?.adapter?.notifyItemInserted(packageArrayList.size)
         }
-
-
     }
-
-
 }
 
 //TODO: Edycja pakietu - wyświetlanie listy słówek (recyclerview pewnie) -> (dodawanie i usuwanie słówek)
-//TODO: Nauka - wyświetlanie słówek z pakietu, możliwość zaznaczenia słówka jako nauczonego
 //TODO: Zapisywanie pakietów w bazie danych - odczytywanie ich z niej
 //TODO: eksport i import pakietów do/z pliku txt żeby można było wysyłać gotowe pakiety fiszek innym
