@@ -2,6 +2,7 @@ package com.example.flashcards
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -11,17 +12,12 @@ import androidx.recyclerview.widget.RecyclerView
 
 class StudyingActivity : AppCompatActivity() {
     private lateinit var flashCardRecyclerView: RecyclerView
-    //TODO: Get flashcards from the folder
-    private var flashCards = arrayListOf<String>()
+    private var flashCards: ArrayList<FlashCard>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_learning)
-        flashCards.add("jeden")
-        flashCards.add("dwa")
-        flashCards.add("trzy")
-        flashCards.add("cztery")
-        flashCards.add("pięć")
+        flashCards = MainActivity.packageArrayList[intent.getIntExtra("position",0)].flashCards
         initWidgets()
         setFlashCardView()
     }

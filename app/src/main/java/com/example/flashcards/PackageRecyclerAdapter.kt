@@ -10,7 +10,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 class PackageRecyclerAdapter(private val packageSet: ArrayList<Package>,
-                             private val editButtonListener: EditButtonListener
+                             private val editButtonListener: EditButtonListener,
+                             private val studyButtonListener: StudyButtonListener
                             ) : RecyclerView.Adapter<PackageRecyclerAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -32,17 +33,20 @@ class PackageRecyclerAdapter(private val packageSet: ArrayList<Package>,
         return ViewHolder(view)
     }
 
-
-
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         Log.i("TTT",packageSet[position].packageName)
         viewHolder.packageNameTextView.text = packageSet[position].packageName
         viewHolder.editButton.setOnClickListener { editButtonListener.onEditButtonClick(position) }
+        viewHolder.playButton.setOnClickListener { studyButtonListener.onStudyButtonClick(position)}
     }
 
     override fun getItemCount() = packageSet.size
 
     interface EditButtonListener{
         fun onEditButtonClick(position: Int)
+    }
+
+    interface StudyButtonListener {
+        fun onStudyButtonClick(position: Int)
     }
 }
