@@ -12,9 +12,13 @@
         android:theme="@style/Theme.FlashCards"
         tools:targetApi="33">
         <activity
+            android:name=".EditFlashCardActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.Dialog"/>
+        <activity
             android:name=".AddFlashCardActivity"
-            android:theme="@style/Theme.AppCompat.Dialog"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.Dialog" />
         <activity
             android:name=".FlashCardsListActivity"
             android:exported="false" />

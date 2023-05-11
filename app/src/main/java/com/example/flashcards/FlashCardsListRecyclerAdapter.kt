@@ -11,8 +11,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 class FlashCardsListRecyclerAdapter(private val flashCardsList: ArrayList<FlashCard>,
-                                    private val deleteButtonListener: FlashCardsListRecyclerAdapter.DeleteButtonListener
-                                   ) : RecyclerView.Adapter<FlashCardsListRecyclerAdapter.ViewHolder>() {
+                                    private val deleteButtonListener: DeleteButtonListener,
+                                    private val editButtonListener: EditButtonListener
+                                    ) : RecyclerView.Adapter<FlashCardsListRecyclerAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var wordTextView : TextView
@@ -40,11 +41,16 @@ class FlashCardsListRecyclerAdapter(private val flashCardsList: ArrayList<FlashC
         viewHolder.wordTextView.text = flashCardsList[position].word
         viewHolder.translationTextView.text = flashCardsList[position].translation
         viewHolder.deleteButton.setOnClickListener { deleteButtonListener.onDeleteButtonClick(position) }
+        viewHolder.editButton.setOnClickListener { editButtonListener.onEditButtonClick(position) }
     }
 
     override fun getItemCount() = flashCardsList.size
 
     interface DeleteButtonListener{
         fun onDeleteButtonClick(position: Int)
+    }
+
+    interface EditButtonListener{
+        fun onEditButtonClick(position: Int)
     }
 }
