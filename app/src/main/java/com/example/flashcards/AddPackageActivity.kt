@@ -27,3 +27,4 @@ class AddPackageActivity : AppCompatActivity() {
         finish()
     }
 }
+//TODO liczba nauczonych/wielkosc pakietu

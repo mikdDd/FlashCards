@@ -9,7 +9,9 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class PackageRecyclerAdapter(private val packageSet: ArrayList<Package> ) : RecyclerView.Adapter<PackageRecyclerAdapter.ViewHolder>() {
+class PackageRecyclerAdapter(private val packageSet: ArrayList<Package>,
+                             private val editButtonListener: EditButtonListener
+                            ) : RecyclerView.Adapter<PackageRecyclerAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val packageNameTextView: TextView
@@ -35,8 +37,12 @@ class PackageRecyclerAdapter(private val packageSet: ArrayList<Package> ) : Recy
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         Log.i("TTT",packageSet[position].packageName)
         viewHolder.packageNameTextView.text = packageSet[position].packageName
+        viewHolder.editButton.setOnClickListener { editButtonListener.onEditButtonClick(position) }
     }
 
     override fun getItemCount() = packageSet.size
 
+    interface EditButtonListener{
+        fun onEditButtonClick(position: Int)
+    }
 }
