@@ -34,8 +34,8 @@ class PackageRecyclerAdapter(private val packageSet: ArrayList<Package>,
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        Log.i("TTT",packageSet[position].packageName)
-        viewHolder.packageNameTextView.text = packageSet[position].packageName
+        Log.i("TTT",packageSet[position].name)
+        viewHolder.packageNameTextView.text = packageSet[position].name
         viewHolder.editButton.setOnClickListener { editButtonListener.onEditButtonClick(position) }
         viewHolder.playButton.setOnClickListener { studyButtonListener.onStudyButtonClick(position)}
     }
