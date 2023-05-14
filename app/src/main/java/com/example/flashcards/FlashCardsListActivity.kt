@@ -10,12 +10,15 @@ import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class FlashCardsListActivity : AppCompatActivity() {
 
     private var flashCards: ArrayList<FlashCard>? = null
     private var flashCardsListRecyclerView: RecyclerView? = null
-
+    private var packageId = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +34,7 @@ class FlashCardsListActivity : AppCompatActivity() {
         }
         Log.i("MMM", flashCards.toString())
          */
+        packageId = intent.getIntExtra("packageId",0)
         flashCards = MainActivity.packageArrayList[intent.getIntExtra("position",0)].flashCards
         flashCardsListRecyclerView = findViewById(R.id.flash_cards_list_recycler)
         flashCardsListRecyclerView?.layoutManager = LinearLayoutManager(this)
@@ -47,7 +51,6 @@ class FlashCardsListActivity : AppCompatActivity() {
                 intent.putExtra("word",flashCards?.get(position)?.word)
                 intent.putExtra("translation",flashCards?.get(position)?.translation)
                 pos = position
-
 
                 editResultLauncher.launch(intent)
             }
@@ -85,7 +88,13 @@ class FlashCardsListActivity : AppCompatActivity() {
             val data: Intent? = result.data
             val wordString = data?.getStringExtra("word").toString()
             val translationString = data?.getStringExtra("translation").toString()
-            flashCards?.add(FlashCard(wordString,translationString))
+
+            var flashCard = FlashCard(packageId, wordString,translationString)
+            GlobalScope.launch(Dispatchers.IO)
+            {
+                flashCard.id = MainActivity.dao.insertCard(flashCard)
+            }
+            flashCards?.add(flashCard)
 
             flashCards?.size?.let { flashCardsListRecyclerView?.adapter?.notifyItemInserted(it) }
         }
