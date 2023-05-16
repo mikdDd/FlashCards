@@ -28,18 +28,17 @@
         app:srcCompat="@android:drawable/ic_menu_edit" />
 
     <ImageButton
-        android:id="@+id/imageButton"
+        android:id="@+id/study_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         app:srcCompat="?android:attr/actionModeFindDrawable" />
 
     <ImageButton
-        android:id="@+id/play_button"
+        android:id="@+id/test_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:onClick="studyOnClick"
         app:srcCompat="@android:drawable/ic_media_play" />
 
 </LinearLayout>

@@ -44,6 +44,8 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 }
 dependencies {
+
+    implementation 'androidx.room:room-common:2.5.1'
     var room_version = "2.5.1"
 
     implementation("androidx.room:room-runtime:$room_version")
