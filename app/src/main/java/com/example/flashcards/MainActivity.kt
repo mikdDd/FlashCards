@@ -76,6 +76,13 @@ class MainActivity : AppCompatActivity() {
                     intent.putExtra("position",position)
                     startActivity(intent)
                 }
+            },
+            object: PackageRecyclerAdapter.TestButtonListener{
+                override fun onTestButtonClick(position: Int) {
+                    val intent = Intent(context, TestActivity::class.java)
+                    intent.putExtra("position", position)
+                    startActivity(intent)
+                }
             }
         )
         packageRecyclerView?.adapter =  packageAdapter
