@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">FlashCards</string>
     <string name="nr_amount">nr / amount</string>
+    <string name="notion_definition">notion/definition</string>
+    <string name="don_t_know">Don\'t know</string>
+    <string name="enter_the_term">Enter the term</string>
 </resources>

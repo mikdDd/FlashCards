@@ -9,28 +9,53 @@ import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.room.Room
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity() {
 
+
     private var packageRecyclerView: RecyclerView? = null
-    companion object {  var packageArrayList: ArrayList<Package> = ArrayList() }
+    companion object {
+        var packageArrayList: ArrayList<Package> = ArrayList()
+        lateinit var dao : DatabaseDao
+    }
+    lateinit var database : Database
+
 
     private var addPackageButton: FloatingActionButton? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        var context = this
 
        // packageArrayList.add(Package("PAKIET!", arrayListOf(FlashCard("SLOWO!","TLUMACZENIE"), FlashCard("SLOWO2","TLUAMCZENIE"))))
+        database = Room.databaseBuilder(this, Database::class.java, "database").build()
+        dao = database.Dao()
+
+
 
         println("$packageArrayList.toString()")
 
         addPackageButton = findViewById(R.id.add_package_button)
         packageRecyclerView = findViewById(R.id.recyclerView)
-
+        val job = GlobalScope.launch(Dispatchers.IO)
+        {
+            packageArrayList = ArrayList(dao.selectAllPackages())
+            for(i in packageArrayList)
+            {
+                i.flashCards = ArrayList(dao.selectAllCards(i.id))
+            }
+        }
+        runBlocking {
+            job.join()
+        }
         packageRecyclerView?.layoutManager = LinearLayoutManager(this)
-        var context = this
         var packageAdapter = PackageRecyclerAdapter(packageArrayList,
             object: PackageRecyclerAdapter.EditButtonListener{
             override fun onEditButtonClick(position: Int) {
@@ -39,6 +64,7 @@ class MainActivity : AppCompatActivity() {
                 //var extra = Bundle()
                // extra.putSerializable("flash_card_list",packageArrayList[position].flashCards)
                 intent.putExtra("position",position)
+                intent.putExtra("packageId", packageArrayList[position].id)
                 Log.i("MMM", packageArrayList[position].flashCards.toString())
                 //intent.putExtra("",extra)
                 startActivity(intent)
@@ -50,9 +76,17 @@ class MainActivity : AppCompatActivity() {
                     intent.putExtra("position",position)
                     startActivity(intent)
                 }
+            },
+            object: PackageRecyclerAdapter.TestButtonListener{
+                override fun onTestButtonClick(position: Int) {
+                    val intent = Intent(context, TestActivity::class.java)
+                    intent.putExtra("position", position)
+                    startActivity(intent)
+                }
             }
         )
         packageRecyclerView?.adapter =  packageAdapter
+
     }
 
     fun addPackageButtonClicked(view: View) {
@@ -66,10 +100,20 @@ class MainActivity : AppCompatActivity() {
             val data: Intent? = result.data
             val nameString = data?.getStringExtra("package_name").toString()
             println(nameString)
-            nameString.let { Package(it) }
-                .let { packageArrayList.add(it) }
 
-            packageRecyclerView?.adapter?.notifyItemInserted(packageArrayList.size)
+            Package(nameString)
+                .let{
+                    GlobalScope.launch(Dispatchers.IO)
+                    {
+                        it.id = dao.insertPackage(it)
+                        Log.d("test321", it.id.toString())
+
+                    }
+                    packageArrayList.add(it)
+                    packageRecyclerView?.adapter?.notifyItemInserted(packageArrayList.size)
+
+                }
+
         }
     }
 }

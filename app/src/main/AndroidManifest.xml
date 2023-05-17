@@ -30,6 +30,12 @@
             android:name=".StudyingActivity">
         </activity>
         <activity
+            android:name=".TestActivity">
+        </activity>
+        <activity
+            android:name=".TestScoreActivity">
+        </activity>
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
