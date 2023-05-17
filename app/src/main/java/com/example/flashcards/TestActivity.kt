@@ -58,6 +58,7 @@ class TestActivity : AppCompatActivity() {
         else {
             wrongAnswers++
         }
+        input.text.clear()
         globalCounter++
         startTest()
     }
