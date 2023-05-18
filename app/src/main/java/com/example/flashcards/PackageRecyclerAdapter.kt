@@ -38,9 +38,9 @@ class PackageRecyclerAdapter(private val packageSet : ArrayList<Package>,
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         Log.i("TTT",packageSet[position].name)
         viewHolder.packageNameTextView.text = packageSet[position].name
-        viewHolder.editButton.setOnClickListener { editButtonListener.onEditButtonClick(position) }
-        viewHolder.studyButton.setOnClickListener { studyButtonListener.onStudyButtonClick(position)}
-        viewHolder.testButton.setOnClickListener { testButtonListener.onTestButtonClick(position) }
+        viewHolder.editButton.setOnClickListener { editButtonListener.onEditButtonClick( viewHolder.adapterPosition) }
+        viewHolder.studyButton.setOnClickListener { studyButtonListener.onStudyButtonClick(position)}       //TODO: SPRAWDZIC CZY NIE ZBUGOWANE PO USUWANIU
+        viewHolder.testButton.setOnClickListener { testButtonListener.onTestButtonClick(position) }         //TODO: SPRAWDZIC CZY NIE ZBUGOWANE PO USUWANIU
     }
 
     override fun getItemCount() = packageSet.size

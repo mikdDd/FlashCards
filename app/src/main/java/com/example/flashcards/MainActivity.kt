@@ -34,7 +34,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         var context = this
 
-       // packageArrayList.add(Package("PAKIET!", arrayListOf(FlashCard("SLOWO!","TLUMACZENIE"), FlashCard("SLOWO2","TLUAMCZENIE"))))
         database = Room.databaseBuilder(this, Database::class.java, "database").build()
         dao = database.Dao()
 
@@ -55,19 +54,46 @@ class MainActivity : AppCompatActivity() {
         runBlocking {
             job.join()
         }
+
+        val resultLauncher3 = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+
+                val data: Intent? = result.data
+                var position = data?.getIntExtra("position",0)
+                val name = data?.getStringExtra("new_name")
+                if(data?.getBooleanExtra("deleted",false)!!){
+                    if (position != null) {
+                        packageRecyclerView?.adapter?.notifyItemRemoved(position)
+                    }
+                } else {
+                    position?.let {
+                        if (name != null) {
+                            packageArrayList.get(it).name = name
+                            packageRecyclerView?.adapter?.notifyItemChanged(position)
+                        }
+                    }
+                }
+            }
+        }
         packageRecyclerView?.layoutManager = LinearLayoutManager(this)
         var packageAdapter = PackageRecyclerAdapter(packageArrayList,
             object: PackageRecyclerAdapter.EditButtonListener{
             override fun onEditButtonClick(position: Int) {
+
+
                 val intent = Intent(context,FlashCardsListActivity::class.java)
-                Log.i("MMM",position.toString())
+                Log.i("MMM","POS: "+position.toString())
+                val recyclerView = packageRecyclerView
+                //Log.i("MMM","POS: "+ (recyclerView.viewHol ))
                 //var extra = Bundle()
                // extra.putSerializable("flash_card_list",packageArrayList[position].flashCards)
                 intent.putExtra("position",position)
                 intent.putExtra("packageId", packageArrayList[position].id)
                 Log.i("MMM", packageArrayList[position].flashCards.toString())
                 //intent.putExtra("",extra)
-                startActivity(intent)
+                resultLauncher3.launch(intent)
+                //startActivity(intent)
+                //packageRecyclerView?.adapter?.notifyItemChanged(position)
             }
         },
             object: PackageRecyclerAdapter.StudyButtonListener{
@@ -116,12 +142,32 @@ class MainActivity : AppCompatActivity() {
 
         }
     }
+
+    fun onDownloadButtonClick(view: View) {
+        val intent = Intent(this, DownloadPackageActivity::class.java)
+
+        resultLauncher2.launch(intent)
+
+
+    }
+    var resultLauncher2 = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+
+
+
+          //  packageArrayList.get(packageArrayList.size-1).id = dao.insertPackage(packageArrayList.get(packageArrayList.size-1))
+            packageRecyclerView?.adapter?.notifyItemInserted(packageArrayList.size)
+           // Log.i("MMM", "FLSCARDS:" + packageArrayList.get(packageArrayList.size-1).flashCards.toString())
+
+
+        }
+    }
 }
 
 
 //TODO podpiąć checkboxa learned
-//TODO: Nauka - wyświetlanie słówek z pakietu, możliwość zaznaczenia słówka jako nauczonego
-
-//TODO: Edycja pakietu - wyświetlanie listy słówek (recyclerview pewnie) -> (dodawanie i usuwanie słówek)
 //TODO: Zapisywanie pakietów w bazie danych - odczytywanie ich z niej
-//TODO: eksport i import pakietów do/z pliku txt żeby można było wysyłać gotowe pakiety fiszek innym
+//TODO: IMPORT PAKIETU Z FIREBASE Z KODEM
+//TODO: LADNIEJSZY IMPORT
+//TODO: USUWANIE PAKIETU
+//TODO: USUWANIE USUNIETYCH PAKIETOW Z ROOM

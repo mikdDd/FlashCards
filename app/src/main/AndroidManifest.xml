@@ -9,12 +9,18 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:windowSoftInputMode="adjustResize"
         android:theme="@style/Theme.FlashCards"
         tools:targetApi="33">
         <activity
+            android:name=".DownloadPackageActivity"
+            android:theme="@style/Theme.AppCompat.Dialog"
+            android:exported="false" />
+        <activity
             android:name=".EditFlashCardActivity"
             android:exported="false"
-            android:theme="@style/Theme.AppCompat.Dialog"/>
+
+            android:theme="@style/Theme.AppCompat.Dialog" />
         <activity
             android:name=".AddFlashCardActivity"
             android:exported="false"
@@ -26,15 +32,9 @@
             android:name=".AddPackageActivity"
             android:exported="false"
             android:theme="@style/Theme.AppCompat.Dialog" />
-        <activity
-            android:name=".StudyingActivity">
-        </activity>
-        <activity
-            android:name=".TestActivity">
-        </activity>
-        <activity
-            android:name=".TestScoreActivity">
-        </activity>
+        <activity android:name=".StudyingActivity"></activity>
+        <activity android:name=".TestActivity"></activity>
+        <activity android:name=".TestScoreActivity"></activity>
         <activity
             android:name=".MainActivity"
             android:exported="true">

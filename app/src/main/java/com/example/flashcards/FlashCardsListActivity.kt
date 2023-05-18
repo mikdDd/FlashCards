@@ -6,6 +6,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.EditText
+import android.window.OnBackInvokedDispatcher
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,29 +37,42 @@ class FlashCardsListActivity : AppCompatActivity() {
     private var packageListPosition : Int = 0
     private lateinit var fbDataBase: DatabaseReference
     private var lastGeneratedCode: String = "0"
-
+    private lateinit var nameEditText: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_flash_cards_list)
         var context = this.applicationContext
 
-        /*
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            flashCards = intent.getParcelableArrayListExtra("flash_card_list",FlashCard::class.java) as ArrayList<FlashCard>?
-            Log.i("MMM","TU")
-        } else {
-            flashCards = intent.getParcelableExtra("flash_card_list")
-        }
-        Log.i("MMM", flashCards.toString())
-         */
+
+
+
+        onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                val intent = Intent()
+
+                intent.putExtra("new_name", nameEditText.text.toString())
+                intent.putExtra("position", packageListPosition)
+                //println("Back button pressed")
+                setResult(RESULT_OK,intent)
+                finish()
+                // Code that you need to execute on back press i.e. finish()
+            }
+        })
+
         fbDataBase = Firebase.database.reference
 
         packageId = intent.getIntExtra("packageId",0)
         packageListPosition = intent.getIntExtra("position",0)
+
         flashCards = MainActivity.packageArrayList[packageListPosition].flashCards
+        Log.i("MMM","FC: " + flashCards)
         flashCardsListRecyclerView = findViewById(R.id.flash_cards_list_recycler)
         flashCardsListRecyclerView?.layoutManager = LinearLayoutManager(this)
+
+        nameEditText = findViewById(R.id.editTextText)
+        nameEditText.setText(MainActivity.packageArrayList[packageListPosition].name)
+
         var adapter = flashCards?.let{FlashCardsListRecyclerAdapter(it, object:FlashCardsListRecyclerAdapter.DeleteButtonListener{
             override fun onDeleteButtonClick(position: Int) {
                 it.removeAt(position)
@@ -108,7 +124,8 @@ class FlashCardsListActivity : AppCompatActivity() {
             val wordString = data?.getStringExtra("word").toString()
             val translationString = data?.getStringExtra("translation").toString()
 
-            var flashCard = FlashCard(packageId, wordString,translationString)
+            var flashCard = FlashCard( wordString,translationString)
+            flashCard.packageId = packageId
             GlobalScope.launch(Dispatchers.IO)
             {
                 flashCard.id = MainActivity.dao.insertCard(flashCard)
@@ -141,69 +158,46 @@ class FlashCardsListActivity : AppCompatActivity() {
         alertDialog.show()
 
 
-        fbDataBase.child("packages").addListenerForSingleValueEvent(object : ValueEventListener {
 
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.child(lastGeneratedCode).exists()) {
-                    // run some code
-                    Log.i("MMM","EXIST")
+        fbDataBase.child("packages").get().addOnSuccessListener {
+            if(it.child(lastGeneratedCode).exists()){
+                Log.i("MMM","EXIST")
+                val pack = PackageFireBaseAdapter(MainActivity.packageArrayList.get(packageListPosition), ServerValue.TIMESTAMP)
+                fbDataBase.child("packages").child(lastGeneratedCode).setValue(pack)
+                alertDialog.setMessage("SHARE CODE: $lastGeneratedCode (will be active for 2hrs)")
+            } else{
+                Log.i("MMM","NOTEXIST")
+                var randStr = String.format("%04d",(0..9999).random())
+
+                if(!it.child(randStr).exists()){
                     val pack = PackageFireBaseAdapter(MainActivity.packageArrayList.get(packageListPosition), ServerValue.TIMESTAMP)
-                    fbDataBase.child("packages").child(lastGeneratedCode).setValue(pack)
+                    fbDataBase.child("packages").child(randStr).setValue(pack)
+                    lastGeneratedCode = randStr
                     alertDialog.setMessage("SHARE CODE: $lastGeneratedCode (will be active for 2hrs)")
 
-                } else {
-                    Log.i("MMM","NOTEXIST")
-                    var randStr = String.format("%04d",(0..9999).random())
-
-                    if(!snapshot.child(randStr).exists()){
-                        val pack = PackageFireBaseAdapter(MainActivity.packageArrayList.get(packageListPosition), ServerValue.TIMESTAMP)
-                        fbDataBase.child("packages").child(randStr).setValue(pack)
-                        lastGeneratedCode = randStr
-                        alertDialog.setMessage("SHARE CODE: $lastGeneratedCode (will be active for 2hrs)")
-
-                    } else{
-                        Log.i("MMM","KOD ZAJĘTY ")
-                    }
+                } else{
+                    Log.i("MMM","KOD ZAJĘTY ")
                 }
             }
-
-            override fun onCancelled(databaseError: DatabaseError) {}
-        })
-
-
-
-
-
-    /*
-
-
-        Log.i("MMM","STR: " + randStr)
-        fbDataBase.child("packages").child().get().addOnSuccessListener {
-
-            if(it.exists() && randStr != lastGeneratedCode) {
-                Log.i("MMM", "ZAJETY PIN")
-            } else{
-                val pack = PackageFireBaseAdapter(MainActivity.packageArrayList.get(packageListPosition), ServerValue.TIMESTAMP)
-                fbDataBase.child("packages").child(randStr).setValue(pack)
-                lastGeneratedCode = randStr
-            }
         }
-        //Log.i("MMM",fbDataBase.child("packages").child("123"))
-        //Log.i("MMM","$randInt")
-  */
 
 
 
+
+
+
+            //TODO: poprawić
         val cutoff : Long = Date().time - TimeUnit.MILLISECONDS.convert(3, TimeUnit.SECONDS)
         Log.i("MMM", "CUTOFF:$cutoff")
+        
+
         val oldItems: Query = FirebaseDatabase.getInstance().getReference().child("packages").orderByChild("timestamp").endBefore(cutoff.toDouble())
         oldItems.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if(snapshot.exists()) {
                     for (itemSnapshot in snapshot.children) {
                         Log.i("MMM","REMOVING" + itemSnapshot.value)
-                        ///if(itemSnapshot.value() == lastGeneratedCode)
-                        //Log.i("MMM","VAL:" + itemSnapshot.key)
+
 
                         if(itemSnapshot.key!=lastGeneratedCode){
                             itemSnapshot.ref.removeValue()
@@ -220,6 +214,17 @@ class FlashCardsListActivity : AppCompatActivity() {
 
     }
 
-    //9999
+    fun onPackageDeleteButtonClick(view: View) {
+        MainActivity.packageArrayList.removeAt(packageListPosition)
+        val intent = Intent()
+        intent.putExtra("position",packageListPosition)
+        intent.putExtra("deleted",true)
+        //intent.putExtra("new_name", nameEditText.text.toString())
+        setResult(RESULT_OK,intent)
+        finish()
+
+    }
+
+
 }
 //TODO learned checkbox pass by intent
