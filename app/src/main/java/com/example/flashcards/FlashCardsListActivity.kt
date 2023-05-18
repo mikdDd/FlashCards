@@ -212,9 +212,9 @@ class FlashCardsListActivity : AppCompatActivity() {
 
 
             //TODO: poprawić
-        val cutoff : Long = Date().time - TimeUnit.MILLISECONDS.convert(3, TimeUnit.SECONDS)
+        val cutoff : Long = Date().time - TimeUnit.MILLISECONDS.convert(10, TimeUnit.SECONDS)
         Log.i("MMM", "CUTOFF:$cutoff")
-        
+
 
         val oldItems: Query = FirebaseDatabase.getInstance().getReference().child("packages").orderByChild("timestamp").endBefore(cutoff.toDouble())
         oldItems.addListenerForSingleValueEvent(object : ValueEventListener {
