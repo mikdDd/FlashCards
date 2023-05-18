@@ -46,9 +46,9 @@ class MainActivity : AppCompatActivity() {
         val job = GlobalScope.launch(Dispatchers.IO)
         {
             packageArrayList = ArrayList(dao.selectAllPackages())
-            for(i in packageArrayList)
+            for(p in packageArrayList)
             {
-                i.flashCards = ArrayList(dao.selectAllCards(i.id))
+                p.flashCards = ArrayList(dao.selectAllCards(p.id))
             }
         }
         runBlocking {
@@ -90,6 +90,7 @@ class MainActivity : AppCompatActivity() {
                 intent.putExtra("position",position)
                 intent.putExtra("packageId", packageArrayList[position].id)
                 Log.i("MMM", packageArrayList[position].flashCards.toString())
+                Log.i("MMM", packageArrayList[position].id.toString())
                 //intent.putExtra("",extra)
                 resultLauncher3.launch(intent)
                 //startActivity(intent)
@@ -167,7 +168,9 @@ class MainActivity : AppCompatActivity() {
 
 //TODO podpiąć checkboxa learned
 //TODO: Zapisywanie pakietów w bazie danych - odczytywanie ich z niej
+
 //TODO: IMPORT PAKIETU Z FIREBASE Z KODEM
 //TODO: LADNIEJSZY IMPORT
 //TODO: USUWANIE PAKIETU
 //TODO: USUWANIE USUNIETYCH PAKIETOW Z ROOM
+

@@ -1,9 +1,6 @@
 package com.example.flashcards
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 
 @Dao
 interface DatabaseDao
@@ -14,14 +11,25 @@ interface DatabaseDao
     @Query("SELECT * FROM Package")
     fun selectAllPackages() : List<Package>
 
+    @Update
+    fun updatePackage(updatedPackage: Package)
+
     @Delete
     fun deletePackage(oldPackage: Package)
+
+
+
+    @Insert
+    fun insertCard(card: FlashCard): Long
 
     @Query("SELECT * FROM FlashCard WHERE packageId = :packageID")
     fun selectAllCards(packageID: Long) : List<FlashCard>
 
-    @Insert
-    fun insertCard(card: FlashCard): Long
+    @Update
+    fun updateCard(card: FlashCard)
+
+    @Delete
+    fun deleteCard(card: FlashCard)
 /*
     @Query("SELECT * FROM flashCards, packages WHERE packages.name=':cardPackage' AND package.id=flashCards.package_id")
     fun getCardsFromPackage(cardPackage: Package): List<FlashCard>
