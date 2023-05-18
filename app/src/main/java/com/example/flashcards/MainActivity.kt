@@ -47,9 +47,9 @@ class MainActivity : AppCompatActivity() {
         val job = GlobalScope.launch(Dispatchers.IO)
         {
             packageArrayList = ArrayList(dao.selectAllPackages())
-            for(i in packageArrayList)
+            for(p in packageArrayList)
             {
-                i.flashCards = ArrayList(dao.selectAllCards(i.id))
+                p.flashCards = ArrayList(dao.selectAllCards(p.id))
             }
         }
         runBlocking {
@@ -66,6 +66,7 @@ class MainActivity : AppCompatActivity() {
                 intent.putExtra("position",position)
                 intent.putExtra("packageId", packageArrayList[position].id)
                 Log.i("MMM", packageArrayList[position].flashCards.toString())
+                Log.i("MMM", packageArrayList[position].id.toString())
                 //intent.putExtra("",extra)
                 startActivity(intent)
             }
@@ -118,3 +119,5 @@ class MainActivity : AppCompatActivity() {
 //TODO: Edycja pakietu - wyświetlanie listy słówek (recyclerview pewnie) -> (dodawanie i usuwanie słówek)
 //TODO: Zapisywanie pakietów w bazie danych - odczytywanie ich z niej
 //TODO: eksport i import pakietów do/z pliku txt żeby można było wysyłać gotowe pakiety fiszek innym
+
+//TODO usuwanie i edycja pakietu

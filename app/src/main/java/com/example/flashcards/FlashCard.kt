@@ -7,7 +7,7 @@ import java.io.Serializable
 
 @Entity
 data class FlashCard(
-    var packageId: Int,
+    var packageId: Long,
     var word: String,
     var translation: String
 ) : Serializable

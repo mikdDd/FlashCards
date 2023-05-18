@@ -13,12 +13,13 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class FlashCardsListActivity : AppCompatActivity() {
 
     private var flashCards: ArrayList<FlashCard>? = null
     private var flashCardsListRecyclerView: RecyclerView? = null
-    private var packageId = 0
+    private var packageId = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,14 +35,24 @@ class FlashCardsListActivity : AppCompatActivity() {
         }
         Log.i("MMM", flashCards.toString())
          */
-        packageId = intent.getIntExtra("packageId",0)
+        packageId = intent.getLongExtra("packageId", 0L)
+        Log.d("test321", packageId.toString())
         flashCards = MainActivity.packageArrayList[intent.getIntExtra("position",0)].flashCards
         flashCardsListRecyclerView = findViewById(R.id.flash_cards_list_recycler)
         flashCardsListRecyclerView?.layoutManager = LinearLayoutManager(this)
         var adapter = flashCards?.let{FlashCardsListRecyclerAdapter(it, object:FlashCardsListRecyclerAdapter.DeleteButtonListener{
             override fun onDeleteButtonClick(position: Int) {
-                it.removeAt(position)
+                val job = GlobalScope.launch(Dispatchers.IO)
+                {
+                    MainActivity.dao.deleteCard(it.removeAt(position))
+                }
+
                 flashCardsListRecyclerView?.adapter?.notifyItemRemoved(position)
+
+                runBlocking {
+                    job.join()
+                }
+
             }
         },object:FlashCardsListRecyclerAdapter.EditButtonListener{
             var pos : Int? = null
@@ -62,6 +73,16 @@ class FlashCardsListActivity : AppCompatActivity() {
                     val translationString = data?.getStringExtra("translation").toString()
                     flashCards?.get(pos!!)?.word = wordString
                     flashCards?.get(pos!!)?.translation = translationString
+
+
+                    val job = GlobalScope.launch(Dispatchers.IO)
+                    {
+                        flashCards?.get(pos!!)?.let { it1 -> MainActivity.dao.updateCard(it1) }
+                    }
+
+                    runBlocking {
+                        job.join()
+                    }
 
                     flashCards?.let { flashCardsListRecyclerView?.adapter?.notifyItemChanged(pos!!)}
                 }
@@ -105,4 +126,4 @@ class FlashCardsListActivity : AppCompatActivity() {
 
 }
 //TODO learned checkbox pass by intent
-//TODO edycja fiszki
+//TODO checkbox onclick

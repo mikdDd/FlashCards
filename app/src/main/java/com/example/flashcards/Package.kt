@@ -11,6 +11,5 @@ data class Package(
 )
 {
     @PrimaryKey(autoGenerate = true) var id: Long = 0
-    @Ignore
-    var flashCards: ArrayList<FlashCard> = ArrayList()
+    @Ignore var flashCards: ArrayList<FlashCard> = ArrayList()
 }
