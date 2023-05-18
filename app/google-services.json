@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "467534976489",
+    "firebase_url": "https://flashcards-12355-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "flashcards-12355",
+    "storage_bucket": "flashcards-12355.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:467534976489:android:d0b378d45f37a1ec152778",
+        "android_client_info": {
+          "package_name": "com.example.flashcards"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "467534976489-d7h0plhbi3ccoqoanhk0cu7l88oi5s35.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNfb3k-51eVOaoq5C4VIkhKbM2ww22Vd0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "467534976489-d7h0plhbi3ccoqoanhk0cu7l88oi5s35.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
