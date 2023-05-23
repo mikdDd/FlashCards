@@ -106,7 +106,7 @@ class MainActivity : AppCompatActivity() {
             },
             object: PackageRecyclerAdapter.TestButtonListener{
                 override fun onTestButtonClick(position: Int) {
-                    val intent = Intent(context, TestActivity::class.java)
+                    val intent = Intent(context, TestModeActivity::class.java)
                     intent.putExtra("position", position)
                     startActivity(intent)
                 }

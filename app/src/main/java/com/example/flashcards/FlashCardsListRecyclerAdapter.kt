@@ -8,11 +8,13 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 
 class FlashCardsListRecyclerAdapter(private val flashCardsList: ArrayList<FlashCard>,
                                     private val deleteButtonListener: DeleteButtonListener,
-                                    private val editButtonListener: EditButtonListener
+                                    private val editButtonListener: EditButtonListener,
+                                    private val checkBoxListener: CheckBoxListener
                                     ) : RecyclerView.Adapter<FlashCardsListRecyclerAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -27,6 +29,7 @@ class FlashCardsListRecyclerAdapter(private val flashCardsList: ArrayList<FlashC
             learnedCheckBox = view.findViewById(R.id.learned_checkBox)
             editButton = view.findViewById(R.id.edit_button)
             deleteButton = view.findViewById(R.id.delete_button)
+            learnedCheckBox.isChecked = false
         }
     }
 
@@ -42,6 +45,7 @@ class FlashCardsListRecyclerAdapter(private val flashCardsList: ArrayList<FlashC
         viewHolder.translationTextView.text = flashCardsList[position].translation
         viewHolder.deleteButton.setOnClickListener { deleteButtonListener.onDeleteButtonClick(position) }
         viewHolder.editButton.setOnClickListener { editButtonListener.onEditButtonClick(position) }
+        viewHolder.learnedCheckBox.setOnClickListener { checkBoxListener.onCheckBoxClick(position) }
     }
 
     override fun getItemCount() = flashCardsList.size
@@ -52,5 +56,9 @@ class FlashCardsListRecyclerAdapter(private val flashCardsList: ArrayList<FlashC
 
     interface EditButtonListener{
         fun onEditButtonClick(position: Int)
+    }
+
+    interface CheckBoxListener {
+        fun onCheckBoxClick(position: Int)
     }
 }

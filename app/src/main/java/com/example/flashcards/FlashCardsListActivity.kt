@@ -79,7 +79,8 @@ class FlashCardsListActivity : AppCompatActivity() {
         nameEditText = findViewById(R.id.editTextText)
         nameEditText.setText(MainActivity.packageArrayList[packageListPosition].name)
 
-        var adapter = flashCards?.let{FlashCardsListRecyclerAdapter(it, object:FlashCardsListRecyclerAdapter.DeleteButtonListener{
+        var adapter = flashCards?.let{FlashCardsListRecyclerAdapter(it,
+            object:FlashCardsListRecyclerAdapter.DeleteButtonListener{
             override fun onDeleteButtonClick(position: Int) {
                 val job = GlobalScope.launch(Dispatchers.IO)
                 {
@@ -128,12 +129,21 @@ class FlashCardsListActivity : AppCompatActivity() {
 
 
             }
+        }, object: FlashCardsListRecyclerAdapter.CheckBoxListener {
+                override fun onCheckBoxClick(position: Int) {
+                    val job = GlobalScope.launch(Dispatchers.IO) {
+                        MainActivity.dao.updateLearned(position.toLong(), !it[position].learned)
+                        it[position].learned = !it[position].learned
+                    }
+
+                    flashCardsListRecyclerView?.adapter?.notifyItemChanged(position)
+
+                    runBlocking {
+                        job.join()
+                    }
+
+                }
         })}
-
-
-
-
-
         flashCardsListRecyclerView?.adapter = adapter
     }
 

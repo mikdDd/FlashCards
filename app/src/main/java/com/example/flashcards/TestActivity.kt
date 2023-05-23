@@ -3,14 +3,17 @@ package com.example.flashcards
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
 class TestActivity : AppCompatActivity() {
+    private val ANSWER_AS_TRANSLATION = 1
+    private val ANSWER_AS_NOTION = 2
     private var flashCards: ArrayList<FlashCard>? = null
-    private lateinit var flashCardsToTest : ArrayList<FlashCard>
+    private var flashCardsToTest : ArrayList<FlashCard> = ArrayList()
     private lateinit var nrAmount : TextView
     private lateinit var notionDefinition : TextView
     private lateinit var input : EditText
@@ -18,12 +21,25 @@ class TestActivity : AppCompatActivity() {
     private var correctAnswers = 0
     private var wrongAnswers = 0
     private var globalCounter = 1
+    private var mode = 0
+    private var isTestWithLearnedWords = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_test)
+        mode = intent.getIntExtra("test_mode", 0)
+        isTestWithLearnedWords = intent.getBooleanExtra("learned_mode", false)
         flashCards = MainActivity.packageArrayList[intent.getIntExtra("position",0)].flashCards
-        flashCardsToTest = flashCards as ArrayList<FlashCard>
+        if (!isTestWithLearnedWords) {
+            for (i in 0 until flashCards!!.size) {
+                if (!flashCards!![i].learned) {
+                    flashCardsToTest.add(flashCards!![i])
+                }
+            }
+        }
+        else {
+            flashCardsToTest = flashCards as ArrayList<FlashCard>
+        }
         initWidgets()
         flashCardsToTest.shuffle()
         startTest()
@@ -39,8 +55,14 @@ class TestActivity : AppCompatActivity() {
     private fun startTest() {
         if (globalCounter - 1 != flashCardsToTest.size) {
             nrAmount.text = "$globalCounter / ${flashCardsToTest.size}"
-            notionDefinition.text = flashCardsToTest[globalCounter - 1].word
-            goodAnswer = flashCardsToTest[globalCounter - 1].translation
+            if (mode == ANSWER_AS_TRANSLATION) {
+                notionDefinition.text = flashCardsToTest[globalCounter - 1].word
+                goodAnswer = flashCardsToTest[globalCounter - 1].translation
+            }
+            else if (mode == ANSWER_AS_NOTION){
+                notionDefinition.text = flashCardsToTest[globalCounter - 1].translation
+                goodAnswer = flashCardsToTest[globalCounter - 1].word
+            }
         }
         else {
             val intent = Intent(this, TestScoreActivity::class.java)

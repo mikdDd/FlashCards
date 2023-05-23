@@ -25,6 +25,9 @@ interface DatabaseDao
     @Query("SELECT * FROM FlashCard WHERE packageId = :packageID")
     fun selectAllCards(packageID: Long) : List<FlashCard>
 
+    @Query("UPDATE FlashCard SET learned = :newValue WHERE id = :flashCardID")
+    fun updateLearned(flashCardID: Long, newValue: Boolean)
+
     @Update
     fun updateCard(card: FlashCard)
 

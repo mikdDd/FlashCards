@@ -4,4 +4,6 @@
     <string name="notion_definition">notion/definition</string>
     <string name="don_t_know">Don\'t know</string>
     <string name="enter_the_term">Enter the term</string>
+    <string name="write_notions">Write notions...</string>
+    <string name="write_translations">Write translations...</string>
 </resources>
