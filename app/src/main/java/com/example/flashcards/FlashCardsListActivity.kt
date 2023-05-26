@@ -131,16 +131,19 @@ class FlashCardsListActivity : AppCompatActivity() {
             }
         }, object: FlashCardsListRecyclerAdapter.CheckBoxListener {
                 override fun onCheckBoxClick(position: Int) {
+                    flashCards!!.get(position).learned = !flashCards!!.get(position).learned
                     val job = GlobalScope.launch(Dispatchers.IO) {
-                        MainActivity.dao.updateLearned(position.toLong(), !it[position].learned)
-                        it[position].learned = !it[position].learned
+                        MainActivity.dao.updateLearned(position.toLong(), it[position].learned)
+                       // it[position].learned = !it[position].learned
                     }
 
-                    flashCardsListRecyclerView?.adapter?.notifyItemChanged(position)
+                //TODO powinno być OK ale sprawdzić czy działa zapisywanie do bazy bo grzebałem w tym
 
                     runBlocking {
                         job.join()
                     }
+
+                    flashCardsListRecyclerView?.adapter?.notifyItemChanged(position)
 
                 }
         })}
