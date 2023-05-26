@@ -29,7 +29,7 @@ class FlashCardsListRecyclerAdapter(private val flashCardsList: ArrayList<FlashC
             learnedCheckBox = view.findViewById(R.id.learned_checkBox)
             editButton = view.findViewById(R.id.edit_button)
             deleteButton = view.findViewById(R.id.delete_button)
-            learnedCheckBox.isChecked = false
+            //learnedCheckBox.isChecked = false
         }
     }
 
@@ -43,6 +43,7 @@ class FlashCardsListRecyclerAdapter(private val flashCardsList: ArrayList<FlashC
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         viewHolder.wordTextView.text = flashCardsList[position].word
         viewHolder.translationTextView.text = flashCardsList[position].translation
+        viewHolder.learnedCheckBox.isChecked = flashCardsList[position].learned
         viewHolder.deleteButton.setOnClickListener { deleteButtonListener.onDeleteButtonClick(position) }
         viewHolder.editButton.setOnClickListener { editButtonListener.onEditButtonClick(position) }
         viewHolder.learnedCheckBox.setOnClickListener { checkBoxListener.onCheckBoxClick(position) }
