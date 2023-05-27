@@ -4,6 +4,8 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.EditText
@@ -52,13 +54,16 @@ class FlashCardsListActivity : AppCompatActivity() {
 
 
 
+
         onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 val intent = Intent()
 
+
                 intent.putExtra("new_name", nameEditText.text.toString())
                 intent.putExtra("position", packageListPosition)
                 //println("Back button pressed")
+
                 setResult(RESULT_OK,intent)
                 finish()
                 // Code that you need to execute on back press i.e. finish()
@@ -67,9 +72,9 @@ class FlashCardsListActivity : AppCompatActivity() {
 
         fbDataBase = Firebase.database.reference
 
-        packageId = intent.getIntExtra("packageId",0)
+        packageId = intent.getLongExtra("packageId",0).toInt()
         packageListPosition = intent.getIntExtra("position",0)
-
+        Log.d("test321", packageId.toString())
         flashCards = MainActivity.packageArrayList[packageListPosition].flashCards
         Log.i("MMM","FC: " + flashCards)
 
@@ -78,6 +83,21 @@ class FlashCardsListActivity : AppCompatActivity() {
 
         nameEditText = findViewById(R.id.editTextText)
         nameEditText.setText(MainActivity.packageArrayList[packageListPosition].name)
+
+        nameEditText.setOnFocusChangeListener { view, hasFocus ->
+
+            if(!hasFocus)
+            {
+                MainActivity.packageArrayList[packageListPosition].name = nameEditText.text.toString()
+                val job = GlobalScope.launch(Dispatchers.IO)
+                {
+                    MainActivity.dao.updatePackage(MainActivity.packageArrayList[packageListPosition])
+                }
+                runBlocking {
+                    job.join()
+                }
+            }
+        }
 
         var adapter = flashCards?.let{FlashCardsListRecyclerAdapter(it,
             object:FlashCardsListRecyclerAdapter.DeleteButtonListener{
@@ -133,11 +153,10 @@ class FlashCardsListActivity : AppCompatActivity() {
                 override fun onCheckBoxClick(position: Int) {
                     flashCards!!.get(position).learned = !flashCards!!.get(position).learned
                     val job = GlobalScope.launch(Dispatchers.IO) {
-                        MainActivity.dao.updateLearned(position.toLong(), it[position].learned)
-                       // it[position].learned = !it[position].learned
+                        MainActivity.dao.updateCard(it[position])
                     }
 
-                //TODO powinno być OK ale sprawdzić czy działa zapisywanie do bazy bo grzebałem w tym
+                    flashCardsListRecyclerView?.adapter?.notifyItemChanged(position)
 
                     runBlocking {
                         job.join()
@@ -163,13 +182,16 @@ class FlashCardsListActivity : AppCompatActivity() {
             val translationString = data?.getStringExtra("translation").toString()
 
             var flashCard = FlashCard( wordString,translationString)
+            Log.d("test321", packageId.toString())
             flashCard.packageId = packageId
-            GlobalScope.launch(Dispatchers.IO)
+            val job = GlobalScope.launch(Dispatchers.IO)
             {
                 flashCard.id = MainActivity.dao.insertCard(flashCard)
             }
             flashCards?.add(flashCard)
-
+            runBlocking {
+                job.join()
+            }
             flashCards?.size?.let { flashCardsListRecyclerView?.adapter?.notifyItemInserted(it) }
         }
 
@@ -252,13 +274,27 @@ class FlashCardsListActivity : AppCompatActivity() {
 
     }
 
-    fun onPackageDeleteButtonClick(view: View) {
-        MainActivity.packageArrayList.removeAt(packageListPosition)
+    fun onPackageDeleteButtonClick(view: View)
+    {
         val intent = Intent()
+        val job = GlobalScope.launch(Dispatchers.IO) {
+            Log.d("test321", packageListPosition.toString())
+            MainActivity.dao.deletePackage(MainActivity.packageArrayList[packageListPosition])
+            MainActivity.dao.deleteAllCards(MainActivity.packageArrayList[packageListPosition].id)
+        }
+        runBlocking {
+            job.join()
+        }
+        MainActivity.packageArrayList.removeAt(packageListPosition)
+
         intent.putExtra("position",packageListPosition)
         intent.putExtra("deleted",true)
         //intent.putExtra("new_name", nameEditText.text.toString())
+
+
+
         setResult(RESULT_OK,intent)
+
         finish()
 
     }

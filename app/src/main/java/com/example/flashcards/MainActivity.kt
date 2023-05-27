@@ -70,6 +70,7 @@ class MainActivity : AppCompatActivity() {
                         if (name != null) {
                             packageArrayList.get(it).name = name
                             packageRecyclerView?.adapter?.notifyItemChanged(position)
+
                         }
                     }
                 }
@@ -89,6 +90,7 @@ class MainActivity : AppCompatActivity() {
                // extra.putSerializable("flash_card_list",packageArrayList[position].flashCards)
                 intent.putExtra("position",position)
                 intent.putExtra("packageId", packageArrayList[position].id)
+                Log.d("test321", packageArrayList[position].id.toString())
                 Log.i("MMM", packageArrayList[position].flashCards.toString())
                 Log.i("MMM", packageArrayList[position].id.toString())
                 //intent.putExtra("",extra)

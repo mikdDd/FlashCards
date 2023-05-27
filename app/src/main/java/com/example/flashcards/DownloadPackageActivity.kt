@@ -99,6 +99,7 @@ class DownloadPackageActivity : AppCompatActivity() {
                         //Log.d("test321", it.id.toString())
                         for (elem in list) {
                             elem.packageId = it.id.toInt()
+                            elem.id = MainActivity.dao.insertCard(elem)
                         }
                         Log.i("MMM", "ID1: " + it.id)
                     }
@@ -108,8 +109,11 @@ class DownloadPackageActivity : AppCompatActivity() {
                     //TODO: Zmiana packageId w fiszkach (niby zrobione wyżej ale trzeba sprawdzić)
                     it.flashCards = list
 
+
+
                     MainActivity.packageArrayList.add(it)
                     setResult(RESULT_OK, intent)
+                    Log.d("test321", "furgrevj")
                     finish()
                     //packageRecyclerView?.adapter?.notifyItemInserted(MainActivity.packageArrayList.size)
 
