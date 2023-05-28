@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
 class TestActivity : AppCompatActivity() {
@@ -75,9 +76,31 @@ class TestActivity : AppCompatActivity() {
 
     fun onSubmitClick(view: View) {
         if (input.text.toString() == goodAnswer) {
+            Toast.makeText(this, "GOOD ANSWER!", Toast.LENGTH_LONG).show()
+            for (i in 0 until flashCards!!.size) {
+                if (mode == ANSWER_AS_TRANSLATION && flashCards!![i].translation == goodAnswer) {
+                    MainActivity.packageArrayList[intent.getIntExtra("position",0)].flashCards[i].learned = true
+                    break
+                }
+                else if (mode == ANSWER_AS_NOTION && flashCards!![i].word == goodAnswer) {
+                    MainActivity.packageArrayList[intent.getIntExtra("position",0)].flashCards[i].learned = true
+                    break
+                }
+            }
             correctAnswers++
         }
         else {
+            Toast.makeText(this, "WRONG! IT WAS: $goodAnswer", Toast.LENGTH_LONG).show()
+            for (i in 0 until flashCards!!.size) {
+                if (mode == ANSWER_AS_TRANSLATION && flashCards!![i].translation == goodAnswer) {
+                    MainActivity.packageArrayList[intent.getIntExtra("position",0)].flashCards[i].learned = false
+                    break
+                }
+                else if (mode == ANSWER_AS_NOTION && flashCards!![i].word == goodAnswer) {
+                    MainActivity.packageArrayList[intent.getIntExtra("position",0)].flashCards[i].learned = false
+                    break
+                }
+            }
             wrongAnswers++
         }
         input.text.clear()

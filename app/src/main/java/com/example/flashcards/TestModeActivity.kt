@@ -30,6 +30,7 @@ class TestModeActivity : AppCompatActivity() {
         intent.putExtra("learned_mode", withLearnedOn)
         intent.putExtra("position", position)
         startActivity(intent)
+        setResult(RESULT_OK, intent)
         finish()
     }
 
@@ -39,6 +40,7 @@ class TestModeActivity : AppCompatActivity() {
         intent.putExtra("learned_mode", withLearnedOn)
         intent.putExtra("position", position)
         startActivity(intent)
+        setResult(RESULT_OK, intent)
         finish()
     }
 }

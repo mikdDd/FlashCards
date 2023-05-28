@@ -3,7 +3,9 @@ package com.example.flashcards
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -74,6 +76,17 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
+        val testButtonResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val data: Intent? = result.data
+                val position = data?.getIntExtra("position_test",0)
+                if (position != null) {
+                    packageRecyclerView?.adapter?.notifyItemChanged(position)
+                }
+            }
+        }
+
         packageRecyclerView?.layoutManager = LinearLayoutManager(this)
         val packageAdapter = PackageRecyclerAdapter(packageArrayList,
             object: PackageRecyclerAdapter.EditButtonListener{
@@ -87,16 +100,26 @@ class MainActivity : AppCompatActivity() {
         },
             object: PackageRecyclerAdapter.StudyButtonListener{
                 override fun onStudyButtonClick(position: Int) {
-                    val intent = Intent(context, StudyingActivity::class.java)
-                    intent.putExtra("position",position)
-                    startActivity(intent)
+                    if (packageArrayList[position].flashCards.size == 0) {
+                        Toast.makeText(context, "EMPTY PACKAGE!", Toast.LENGTH_LONG).show()
+                    }
+                    else {
+                        val intent = Intent(context, StudyingActivity::class.java)
+                        intent.putExtra("position",position)
+                        startActivity(intent)
+                    }
                 }
             },
             object: PackageRecyclerAdapter.TestButtonListener{
                 override fun onTestButtonClick(position: Int) {
-                    val intent = Intent(context, TestModeActivity::class.java)
-                    intent.putExtra("position", position)
-                    startActivity(intent)
+                    if (packageArrayList[position].flashCards.size == 0) {
+                        Toast.makeText(context, "EMPTY PACKAGE!", Toast.LENGTH_LONG).show()
+                    }
+                    else {
+                        val intent = Intent(context, TestModeActivity::class.java)
+                        intent.putExtra("position_test", position)
+                        testButtonResultLauncher.launch(intent)
+                    }
                 }
             }
         )
