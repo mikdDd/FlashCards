@@ -36,11 +36,15 @@ class PackageRecyclerAdapter(private val packageSet : ArrayList<Package>,
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        Log.i("TTT",packageSet[position].name)
+        var counter = 0
+        for(i in 0 until packageSet[position].flashCards.size){
+            if(packageSet[position].flashCards[i].learned)counter++
+        }
         viewHolder.packageNameTextView.text = packageSet[position].name
+        viewHolder.numOfFlashCardsTextView.text = "${counter}/${packageSet[position].flashCards.size}"
         viewHolder.editButton.setOnClickListener { editButtonListener.onEditButtonClick( viewHolder.adapterPosition) }
-        viewHolder.studyButton.setOnClickListener { studyButtonListener.onStudyButtonClick(position)}       //TODO: SPRAWDZIC CZY NIE ZBUGOWANE PO USUWANIU
-        viewHolder.testButton.setOnClickListener { testButtonListener.onTestButtonClick(position) }         //TODO: SPRAWDZIC CZY NIE ZBUGOWANE PO USUWANIU
+        viewHolder.studyButton.setOnClickListener { studyButtonListener.onStudyButtonClick(viewHolder.adapterPosition)}       //TODO: SPRAWDZIC CZY NIE ZBUGOWANE PO USUWANIU
+        viewHolder.testButton.setOnClickListener { testButtonListener.onTestButtonClick(viewHolder.adapterPosition) }         //TODO: SPRAWDZIC CZY NIE ZBUGOWANE PO USUWANIU
     }
 
     override fun getItemCount() = packageSet.size

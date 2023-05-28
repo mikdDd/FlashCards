@@ -37,10 +37,11 @@
         android:layout_gravity="start"
         android:layout_marginStart="25dp"
         android:layout_weight="0.05"
+        android:backgroundTint="@color/green_main"
         android:fontFamily="@font/doppio_one"
         android:onClick="onSubmitClick"
         android:text="SUBMIT ANSWER"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/black"
         android:textSize="12sp" />
 
     <LinearLayout
@@ -70,7 +71,7 @@
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="10dp"
             android:layout_weight="0.3"
-            android:backgroundTint="#000000"
+            android:backgroundTint="@color/green_main"
             android:fontFamily="@font/doppio_one"
             android:onClick="onDontKnowClick"
             android:text="@string/don_t_know"

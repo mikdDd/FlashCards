@@ -10,7 +10,8 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center"
-        android:text="word" />
+        android:text="word"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/translation_textView"
@@ -18,20 +19,23 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center"
-        android:text="translation" />
+        android:text="translation"
+        android:textStyle="bold" />
 
     <CheckBox
         android:id="@+id/learned_checkBox"
         android:layout_width="25dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:text="learned" />
+        android:text="learned"
+        android:textStyle="bold" />
 
     <ImageButton
         android:id="@+id/edit_button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:backgroundTint="@color/green_background"
         app:srcCompat="@android:drawable/ic_menu_edit" />
 
     <ImageButton
@@ -39,6 +43,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:backgroundTint="@color/green_background"
         app:srcCompat="@android:drawable/ic_menu_delete" />
 
 </LinearLayout>
