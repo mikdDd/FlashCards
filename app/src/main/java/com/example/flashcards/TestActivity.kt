@@ -39,7 +39,10 @@ class TestActivity : AppCompatActivity() {
             }
         }
         else {
-            flashCardsToTest = flashCards as ArrayList<FlashCard>
+            for (i in 0 until flashCards!!.size) {
+                flashCardsToTest.add(flashCards!![i])
+            }
+            //flashCardsToTest = flashCards as ArrayList<FlashCard>
         }
         initWidgets()
         flashCardsToTest.shuffle()
@@ -109,6 +112,17 @@ class TestActivity : AppCompatActivity() {
     }
 
     fun onDontKnowClick(view: View) {
+        Toast.makeText(this, "WRONG! IT WAS: $goodAnswer", Toast.LENGTH_LONG).show()
+        for (i in 0 until flashCards!!.size) {
+            if (mode == ANSWER_AS_TRANSLATION && flashCards!![i].translation == goodAnswer) {
+                MainActivity.packageArrayList[intent.getIntExtra("position_test",0)].flashCards[i].learned = false
+                break
+            }
+            else if (mode == ANSWER_AS_NOTION && flashCards!![i].word == goodAnswer) {
+                MainActivity.packageArrayList[intent.getIntExtra("position_test",0)].flashCards[i].learned = false
+                break
+            }
+        }
         wrongAnswers++
         globalCounter++
         startTest()
