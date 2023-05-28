@@ -30,7 +30,7 @@ class TestActivity : AppCompatActivity() {
         setContentView(R.layout.activity_test)
         mode = intent.getIntExtra("test_mode", 0)
         isTestWithLearnedWords = intent.getBooleanExtra("learned_mode", false)
-        flashCards = MainActivity.packageArrayList[intent.getIntExtra("position",0)].flashCards
+        flashCards = MainActivity.packageArrayList[intent.getIntExtra("position_test",0)].flashCards
         if (!isTestWithLearnedWords) {
             for (i in 0 until flashCards!!.size) {
                 if (!flashCards!![i].learned) {
@@ -79,11 +79,11 @@ class TestActivity : AppCompatActivity() {
             Toast.makeText(this, "GOOD ANSWER!", Toast.LENGTH_LONG).show()
             for (i in 0 until flashCards!!.size) {
                 if (mode == ANSWER_AS_TRANSLATION && flashCards!![i].translation == goodAnswer) {
-                    MainActivity.packageArrayList[intent.getIntExtra("position",0)].flashCards[i].learned = true
+                    MainActivity.packageArrayList[intent.getIntExtra("position_test",0)].flashCards[i].learned = true
                     break
                 }
                 else if (mode == ANSWER_AS_NOTION && flashCards!![i].word == goodAnswer) {
-                    MainActivity.packageArrayList[intent.getIntExtra("position",0)].flashCards[i].learned = true
+                    MainActivity.packageArrayList[intent.getIntExtra("position_test",0)].flashCards[i].learned = true
                     break
                 }
             }
@@ -93,11 +93,11 @@ class TestActivity : AppCompatActivity() {
             Toast.makeText(this, "WRONG! IT WAS: $goodAnswer", Toast.LENGTH_LONG).show()
             for (i in 0 until flashCards!!.size) {
                 if (mode == ANSWER_AS_TRANSLATION && flashCards!![i].translation == goodAnswer) {
-                    MainActivity.packageArrayList[intent.getIntExtra("position",0)].flashCards[i].learned = false
+                    MainActivity.packageArrayList[intent.getIntExtra("position_test",0)].flashCards[i].learned = false
                     break
                 }
                 else if (mode == ANSWER_AS_NOTION && flashCards!![i].word == goodAnswer) {
-                    MainActivity.packageArrayList[intent.getIntExtra("position",0)].flashCards[i].learned = false
+                    MainActivity.packageArrayList[intent.getIntExtra("position_test",0)].flashCards[i].learned = false
                     break
                 }
             }

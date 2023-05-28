@@ -17,7 +17,7 @@ class TestModeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_test_mode)
-        position = intent.getIntExtra("position", 0)
+        position = intent.getIntExtra("position_test", 0)
         switch = findViewById(R.id.learnedSwitch)
         switch.setOnCheckedChangeListener { _, isChecked ->
             withLearnedOn = isChecked
@@ -28,7 +28,7 @@ class TestModeActivity : AppCompatActivity() {
         val intent = Intent(this, TestActivity::class.java)
         intent.putExtra("test_mode",1)
         intent.putExtra("learned_mode", withLearnedOn)
-        intent.putExtra("position", position)
+        intent.putExtra("position_test", position)
         startActivity(intent)
         setResult(RESULT_OK, intent)
         finish()
@@ -38,7 +38,7 @@ class TestModeActivity : AppCompatActivity() {
         val intent = Intent(this, TestActivity::class.java)
         intent.putExtra("test_mode",2)
         intent.putExtra("learned_mode", withLearnedOn)
-        intent.putExtra("position", position)
+        intent.putExtra("position_test", position)
         startActivity(intent)
         setResult(RESULT_OK, intent)
         finish()
