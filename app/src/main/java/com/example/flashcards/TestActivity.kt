@@ -42,7 +42,6 @@ class TestActivity : AppCompatActivity() {
             for (i in 0 until flashCards!!.size) {
                 flashCardsToTest.add(flashCards!![i])
             }
-            //flashCardsToTest = flashCards as ArrayList<FlashCard>
         }
         initWidgets()
         flashCardsToTest.shuffle()
@@ -81,11 +80,11 @@ class TestActivity : AppCompatActivity() {
         if (input.text.toString() == goodAnswer) {
             Toast.makeText(this, "GOOD ANSWER!", Toast.LENGTH_LONG).show()
             for (i in 0 until flashCards!!.size) {
-                if (mode == ANSWER_AS_TRANSLATION && flashCards!![i].translation == goodAnswer) {
+                if (mode == ANSWER_AS_TRANSLATION && flashCardsToTest[globalCounter - 1].id == flashCards!![i].id && flashCards!![i].translation == goodAnswer) {
                     MainActivity.packageArrayList[intent.getIntExtra("position_test",0)].flashCards[i].learned = true
                     break
                 }
-                else if (mode == ANSWER_AS_NOTION && flashCards!![i].word == goodAnswer) {
+                else if (mode == ANSWER_AS_NOTION && flashCardsToTest[globalCounter - 1].id == flashCards!![i].id && flashCards!![i].word == goodAnswer) {
                     MainActivity.packageArrayList[intent.getIntExtra("position_test",0)].flashCards[i].learned = true
                     break
                 }
@@ -95,11 +94,11 @@ class TestActivity : AppCompatActivity() {
         else {
             Toast.makeText(this, "WRONG! IT WAS: $goodAnswer", Toast.LENGTH_LONG).show()
             for (i in 0 until flashCards!!.size) {
-                if (mode == ANSWER_AS_TRANSLATION && flashCards!![i].translation == goodAnswer) {
+                if (mode == ANSWER_AS_TRANSLATION && flashCardsToTest[globalCounter - 1].id == flashCards!![i].id && flashCards!![i].translation == goodAnswer) {
                     MainActivity.packageArrayList[intent.getIntExtra("position_test",0)].flashCards[i].learned = false
                     break
                 }
-                else if (mode == ANSWER_AS_NOTION && flashCards!![i].word == goodAnswer) {
+                else if (mode == ANSWER_AS_NOTION && flashCardsToTest[globalCounter - 1].id == flashCards!![i].id && flashCards!![i].word == goodAnswer) {
                     MainActivity.packageArrayList[intent.getIntExtra("position_test",0)].flashCards[i].learned = false
                     break
                 }
@@ -114,15 +113,16 @@ class TestActivity : AppCompatActivity() {
     fun onDontKnowClick(view: View) {
         Toast.makeText(this, "WRONG! IT WAS: $goodAnswer", Toast.LENGTH_LONG).show()
         for (i in 0 until flashCards!!.size) {
-            if (mode == ANSWER_AS_TRANSLATION && flashCards!![i].translation == goodAnswer) {
+            if (mode == ANSWER_AS_TRANSLATION && flashCardsToTest[globalCounter - 1].id == flashCards!![i].id && flashCards!![i].translation == goodAnswer) {
                 MainActivity.packageArrayList[intent.getIntExtra("position_test",0)].flashCards[i].learned = false
                 break
             }
-            else if (mode == ANSWER_AS_NOTION && flashCards!![i].word == goodAnswer) {
+            else if (mode == ANSWER_AS_NOTION && flashCardsToTest[globalCounter - 1].id == flashCards!![i].id && flashCards!![i].word == goodAnswer) {
                 MainActivity.packageArrayList[intent.getIntExtra("position_test",0)].flashCards[i].learned = false
                 break
             }
         }
+
         wrongAnswers++
         globalCounter++
         startTest()
