@@ -11,6 +11,7 @@
         android:supportsRtl="true"
         android:windowSoftInputMode="adjustResize"
         android:theme="@style/Theme.FlashCards"
+
         tools:targetApi="33">
         <activity
             android:name=".DownloadPackageActivity"

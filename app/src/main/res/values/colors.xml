@@ -9,4 +9,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="orange">#FF8C00</color>
     <color name="green">#006400</color>
+    <color name="green_main">#D3ECCE</color>
+    <color name="green_main_secondary">#626E5F</color>
+    <color name="green_background">#A6BAA2</color>
 </resources>
