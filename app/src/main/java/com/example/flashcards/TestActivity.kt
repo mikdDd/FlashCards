@@ -9,6 +9,10 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class TestActivity : AppCompatActivity() {
     private val ANSWER_AS_TRANSLATION = 1
@@ -82,10 +86,24 @@ class TestActivity : AppCompatActivity() {
             for (i in 0 until flashCards!!.size) {
                 if (mode == ANSWER_AS_TRANSLATION && flashCardsToTest[globalCounter - 1].id == flashCards!![i].id && flashCards!![i].translation == goodAnswer) {
                     MainActivity.packageArrayList[intent.getIntExtra("position_test",0)].flashCards[i].learned = true
+                    val job = GlobalScope.launch(Dispatchers.IO)
+                    {
+                        MainActivity.dao.updateCard(MainActivity.packageArrayList[intent.getIntExtra("position_test",0)].flashCards[i])
+                    }
+                    runBlocking {
+                        job.join()
+                    }
                     break
                 }
                 else if (mode == ANSWER_AS_NOTION && flashCardsToTest[globalCounter - 1].id == flashCards!![i].id && flashCards!![i].word == goodAnswer) {
                     MainActivity.packageArrayList[intent.getIntExtra("position_test",0)].flashCards[i].learned = true
+                    val job = GlobalScope.launch(Dispatchers.IO)
+                    {
+                        MainActivity.dao.updateCard(MainActivity.packageArrayList[intent.getIntExtra("position_test",0)].flashCards[i])
+                    }
+                    runBlocking {
+                        job.join()
+                    }
                     break
                 }
             }
